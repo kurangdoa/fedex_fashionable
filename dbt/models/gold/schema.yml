@@ -1,0 +1,92 @@
+version: 2
+
+models:
+  - name: mart_sales
+    description: "Core sales mart model containing business-level aggregations. Pre-joined with dimensions to serve as a 'One Big Table' (OBT) for Metabase BI consumption."
+    columns:
+      - name: product_key
+        description: "Surrogate key linking to the products dimension (dim_products)."
+        tests:
+          - not_null
+      - name: location_key
+        description: "Surrogate key linking to the locations dimension (dim_locations)."
+        tests:
+          - not_null
+      - name: date_key
+        description: "Surrogate key linking to the date dimension."
+        tests:
+          - not_null
+
+      # Volume Metrics
+      - name: total_orders
+        description: "Total number of unique orders placed."
+      - name: total_qty
+        description: "Total quantity/volume of items sold across all orders."
+      - name: gross_revenue
+        description: "Total gross revenue generated, before accounting for any cancellations."
+
+      # Business Health (Cancellations)
+      - name: cancelled_orders
+        description: "Total number of orders that were marked as 'Cancelled'."
+      - name: cancelled_revenue
+        description: "Total revenue lost specifically due to order cancellations."
+
+      # Net Metrics & Customer Efficiency
+      - name: net_revenue
+        description: "Net revenue generated from all non-cancelled orders."
+      - name: avg_order_value
+        description: "Average Order Value (AOV), calculated as total amount divided by total unique orders."
+      - name: items_per_order
+        description: "Average number of items purchased per order."
+
+      # Segment Metrics
+      - name: b2b_orders
+        description: "Total number of B2B (Business to Business) orders."
+      - name: b2b_revenue
+        description: "Total revenue generated specifically from B2B orders."
+
+      # Promotion Metrics
+      - name: promotion_orders
+        description: "Total number of orders that used at least one promotion."
+      - name: promotion_revenue
+        description: "Total revenue generated from orders that used a promotion."
+
+  - name: obt_sales
+    description: "Aggregated One Big Table containing sales facts joined with product, location, and date dimensions."
+    columns:
+      - name: date_key
+        description: "Surrogate key linking to the date dimension."
+      - name: sku
+        description: "Stock Keeping Unit identifier for the specific product item."
+      - name: status
+        description: "The current status of the order."
+      - name: fulfilment
+        description: "Entity responsible for fulfilling the order."
+      - name: is_b2b
+        description: "Boolean flag indicating if the order was a Business-to-Business transaction."
+      - name: is_promotion
+        description: "Boolean flag indicating if the order used a promotion."
+      - name: currency
+        description: "The currency of the transaction."
+      - name: style
+        description: "The design style identifier for the product."
+      - name: category
+        description: "The type of clothing (e.g., kurta, Western Dress)."
+      - name: ship_city_group
+        description: "The destination city group for shipping."
+      - name: ship_country
+        description: "The destination country code (e.g., IN)."
+      - name: day_of_week_name
+        description: "Day of the week."
+      - name: month_name
+        description: "Name of the month."
+      - name: quarter_of_year
+        description: "Quarter of the year."
+      - name: year_number
+        description: "Year of the transaction."
+      - name: number_of_orders
+        description: "Total number of unique orders placed."
+      - name: sum_quantity
+        description: "Total quantity of items sold."
+      - name: sum_amount
+        description: "Total sales amount."

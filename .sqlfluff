@@ -1,0 +1,12 @@
+[sqlfluff]
+dialect = duckdb
+templater = dbt
+exclude_rules = LT05, ST06
+
+[sqlfluff:indentation]
+tab_space_size = 4
+
+[sqlfluff:templater:dbt]
+project_dir = ./dbt
+profiles_dir = ./dbt
+target = dev

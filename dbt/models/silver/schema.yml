@@ -1,0 +1,136 @@
+version: 2
+
+models:
+  - name: fct_sales
+    description: "Fact table for sales transactions. Grain: one row per order line item."
+    columns:
+      - name: order_product_key
+        description: "Primary key: Surrogate key generated from Order ID and SKU."
+        tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: "The unique identifier for the customer order."
+        tests:
+          - not_null
+
+      - name: date_key
+        description: "The date the order was placed (parsed from MM-DD-YY)."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: "cast('2020-01-01' as date)"
+              max_value: "cast('2026-12-31' as date)"
+
+      - name: status
+        description: "The current status of the order."
+        tests:
+          - not_null
+
+      - name: fulfilment
+        description: "Entity responsible for fulfilling the order."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Fashionable', 'Merchant']
+
+      - name: sales_channel
+        description: "The platform or site where the sale occurred."
+
+      - name: ship_service_level
+        description: "The priority level of the shipping service."
+        tests:
+          - accepted_values:
+              values: ['Expedited', 'Standard']
+
+      - name: sku
+        description: "Stock Keeping Unit identifier for the specific product item."
+        tests:
+          - not_null
+
+      - name: courier_status
+        description: "The delivery status provided by the courier."
+        tests:
+          - accepted_values:
+              values: ['Shipped', 'Unshipped', 'Cancelled', 'Unknown']
+
+      - name: qty
+        description: "The number of units sold in this line item."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: currency
+        description: "The currency of the transaction (e.g., INR)."
+        tests:
+          - accepted_values:
+              values: ['INR', 'Unknown']
+
+      - name: amount
+        description: "Transaction value. Note: Audit confirmed 6.0% missing values in raw data."
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: b2b
+        description: "Boolean flag indicating if the order was a Business-to-Business transaction."
+        tests:
+          - not_null
+
+  - name: dim_products
+    description: "Dimension table containing detailed product attributes."
+    columns:
+      - name: product_key
+        description: "Primary key: Surrogate key for the SKU."
+        tests:
+          - unique
+          - not_null
+
+      - name: style
+        description: "The design style identifier for the product."
+
+      - name: category
+        description: "The type of clothing (e.g., kurta, Western Dress)."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['kurta', 'Set', 'Western Dress', 'Top', 'Ethnic Bottom', 'Saree', 'Blouse', 'Bottom']
+
+      - name: size
+        description: "Clothing sizes. Found in audit: M, L, XL, XXL, S, 3XL, XS, 6XL, 5XL, 4XL."
+        tests:
+          - accepted_values:
+              values: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL']
+
+      - name: asin
+        description: "Amazon Standard Identification Number."
+
+  - name: dim_locations
+    description: "Dimension table for shipping destinations."
+    columns:
+      - name: location_key
+        description: "Primary key: Surrogate key for City/State/Postal Code combination."
+        tests:
+          - unique
+          - not_null
+
+      - name: ship_city
+        description: "The destination city for shipping."
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: ship_state
+        description: "The destination state or region."
+
+      - name: ship_postal_code
+        description: "The destination zip or postal code."
+
+      - name: ship_country
+        description: "The destination country code (e.g., IN)."

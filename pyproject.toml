@@ -1,0 +1,15 @@
+[project]
+name = "fedex_fashionable"
+version = "0.1.0"
+description = "Deliverable of Rhyando for Fedex"
+readme = "README.md"
+requires-python = ">=3.12.3,<3.14"
+dependencies = [
+    "duckdb==1.5.0",
+    "dbt-duckdb==1.10.1",
+    "pandas==2.3.3",
+    "setuptools<71.0.0",
+    "fg-data-profiling>=4.19.1",
+    "pre-commit==4.6.0",
+    "sqlfluff==4.1.0",
+]

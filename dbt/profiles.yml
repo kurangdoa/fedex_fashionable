@@ -1,0 +1,13 @@
+fedex_fashionable_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../database/fashionable.db
+      schema: rhyando
+    prd:
+      type: duckdb
+      path: /usr/app/database/fashionable.db
+    prd-local:
+      type: duckdb
+      path: ../database/fashionable.db

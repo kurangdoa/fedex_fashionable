@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: fashionable__bronze
+    schema: bronze
+    tables:
+      - name: fashionable_sales
+        columns:
+          # Use double quotes inside single quotes for columns with spaces
+          - name: '"Order ID"'
+            tests:
+              - not_null
+
+          - name: '"Sales Channel"' # Don't forget the space at the end if it exists!
+            tests:
+              - not_null

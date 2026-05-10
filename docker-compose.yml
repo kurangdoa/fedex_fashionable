@@ -1,0 +1,36 @@
+services:
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/app
+    # This container runs the script and then stops
+
+  metabase:
+    build:
+      context: .
+      dockerfile: ./vizualisation/Dockerfile
+    # This matches the --name metaduck part of your command
+    container_name: metaduck
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mounts your project folder to /data inside the container
+      - ./database:/data
+    environment:
+      - MB_PLUGINS_DIR=/plugins
+
+      # Optional: Keeps your Metabase settings saved on your hard drive
+      - MB_DB_FILE=/data/metabase.db
+      - TZ=UTC
+
+      # Headless Setup (Auto-configures the admin account on first boot)
+      - MB_SETUP_TOKEN=admin123
+      - MB_ADMIN_EMAIL=admin@kurangdoa.com
+      - MB_ADMIN_FIRST_NAME=admin
+      - MB_ADMIN_LAST_NAME=admin
+      - MB_ADMIN_PASSWORD=kurangdoa123
+      - MB_SITE_NAME="Fashionable"
+    restart: always
