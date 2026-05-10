@@ -4,4 +4,4 @@ target/
 dbt_packages/
 logs/
 tmp/
-*fashionable.db
+fashionable.db
