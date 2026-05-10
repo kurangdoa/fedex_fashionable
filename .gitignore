@@ -5,3 +5,4 @@ dbt_packages/
 logs/
 tmp/
 fashionable.db
+database/
