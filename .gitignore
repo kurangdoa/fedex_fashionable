@@ -6,3 +6,4 @@ logs/
 tmp/
 fashionable.db
 database/
+*slides-export.pdf
