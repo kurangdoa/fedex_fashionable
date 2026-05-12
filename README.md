@@ -40,5 +40,7 @@ To create presentation, you could follow guide here https://sli.dev/guide/
 ```
 npm i -g pnpm
 npx playwright install chromium
+npm i -D playwright-chromium
 npx slidev export
+pnpm run dev
 ```
